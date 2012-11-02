@@ -22,39 +22,46 @@ type Job struct {
 	Color string
 }
 
-func statusHandler(w http.ResponseWriter, r *http.Request) {
+func statusImage(r *http.Request) string {
 	if !strings.HasSuffix(r.URL.Path, ".png") {
-		http.ServeFile(w, r, UnknownImage)
-		return
+		return UnknownImage
 	}
 	jobName := r.URL.Path[1 : len(r.URL.Path)-4]
 	log.Print(jobName)
 
 	resp, err := http.Get("http://ci.moozement.net/job/" + jobName + "/api/json")
 	if err != nil {
-		http.ServeFile(w, r, UnknownImage)
-		return
+		log.Print("Cannot fetch data")
+		return UnknownImage
 	}
+
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return UnknownImage
+	}
 
 	var job Job
 	err = json.Unmarshal(body, &job)
 	if err != nil {
-		log.Print("bad job")
-		http.ServeFile(w, r, UnknownImage)
-		return
+		log.Print("Unmarshal Error")
+		return UnknownImage
 	}
 	log.Print(job.Color)
 
 	switch {
 	case job.Color == BlueColor:
-		http.ServeFile(w, r, PassingImage)
+		return PassingImage
 	case job.Color == RedColor:
-		http.ServeFile(w, r, FailingImage)
-	default:
-		http.ServeFile(w, r, UnknownImage)
+		return FailingImage
 	}
+
+	return UnknownImage
+}
+
+func statusHandler(w http.ResponseWriter, r *http.Request) {
+	image := statusImage(r)
+	http.ServeFile(w, r, image)
 }
 
 func faviconHandler(w http.ResponseWriter, r *http.Request) {
