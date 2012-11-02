@@ -27,7 +27,6 @@ func statusImage(r *http.Request) string {
 		return UnknownImage
 	}
 	jobName := r.URL.Path[1 : len(r.URL.Path)-4]
-	log.Print(jobName)
 
 	resp, err := http.Get("http://ci.moozement.net/job/" + jobName + "/api/json")
 	if err != nil {
@@ -47,7 +46,6 @@ func statusImage(r *http.Request) string {
 		log.Print("Unmarshal Error")
 		return UnknownImage
 	}
-	log.Print(job.Color)
 
 	switch {
 	case job.Color == BlueColor:
