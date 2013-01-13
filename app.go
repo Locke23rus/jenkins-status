@@ -71,6 +71,6 @@ func main() {
 	http.HandleFunc("/", statusHandler)
 	err := http.ListenAndServe(":3000", nil)
 	if err != nil {
-		log.Fatal("ListAndServer: ", err)
+		log.Fatal("ListenAndServe: ", err)
 	}
 }
