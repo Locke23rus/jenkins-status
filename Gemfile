@@ -1,6 +1,9 @@
-source :rubygems
+source 'https://rubygems.org'
 
-gem 'sinatra', '~> 1.3.2'
-gem 'json', '~> 1.7.3'
-gem 'sinatra-contrib', '~> 1.3.1', :group => :development
-gem 'puma', '~> 1.6.3'
+gem 'sinatra', '~> 1.4.3'
+gem 'json', '~> 1.8.0'
+gem 'puma', '~> 2.5.1'
+
+group :development do
+  gem 'shotgun', '~> 0.9'
+end

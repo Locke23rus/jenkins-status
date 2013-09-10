@@ -2,10 +2,8 @@ require 'rubygems'
 require 'net/http'
 require 'bundler/setup'
 Bundler.require(:default, ENV['RACK_ENV'].to_sym)
-require 'sinatra/reloader' if development?
 
 configure :production, :development do
-  enable :logging
   set :server, :puma
 end
 
@@ -13,6 +11,9 @@ get '/:job.png' do
   send_file JenkinsStatus.new(params[:job]).image
 end
 
+get '/:job' do
+  "[![Build Status](https://ci-status.moozement.net/#{params[:job]}.png)](http://ci.moozement.net/job/#{params[:job]}/)"
+end
 
 class JenkinsStatus
 
